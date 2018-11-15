@@ -1,4 +1,4 @@
-package drysis.hc.com.drysis;
+package drysis.hc.com.drysis.imgloader;
 
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
