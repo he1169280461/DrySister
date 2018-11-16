@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.TextView;
 
 import java.net.URL;
 import java.util.ArrayList;
@@ -25,6 +26,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private int page = 1;   //当前页数
     private PictureLoader pictureLoader;
     private SisterApi sisterApi;
+    private SisterTask sisterTask;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -33,10 +35,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         pictureLoader = new PictureLoader();
         initdata();
         initUI();
+
     }
     private void initdata(){
         data = new ArrayList<>();
-        new SisterTask(page).execute();
+
         /*
         urllist=new ArrayList<>();
         urllist.add("http://ww4.sinaimg.cn/large/610dc034jw1f6ipaai7wgj20dw0kugp4.jpg");
@@ -55,6 +58,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         showbutton=(Button)findViewById(R.id.btn_show);
         showimageView=(ImageView)findViewById(R.id.img_show);
         refreshBtn = (Button) findViewById(R.id.btn_refresh);
+
         showbutton.setOnClickListener(this);
         refreshBtn.setOnClickListener(this);
     }
@@ -71,19 +75,17 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 }
                 break;
             case R.id.btn_refresh:
-                page++;
-                new SisterTask(page).execute();
+               // page++;
+                //new SisterTask(page).execute();
+                sisterTask=new SisterTask();
+                sisterTask.execute();
                 curPos = 0;
                 break;
         }
     }
     private class SisterTask extends AsyncTask<Void,Void,ArrayList<Sister>> {
 
-        private int page;
-
-        public SisterTask(int page) {
-            this.page = page;
-        }
+        public  SisterTask(){}
 
         @Override
         protected ArrayList<Sister> doInBackground(Void... params) {
@@ -95,8 +97,16 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             super.onPostExecute(sisters);
             data.clear();
             data.addAll(sisters);
+            page++;
+        }
+        protected void onCancelled() {
+            super.onCancelled();
+            sisterTask = null;
         }
 
-
+    }
+    protected void onDestroy() {
+        super.onDestroy();
+        sisterTask.cancel(true);
     }
 }

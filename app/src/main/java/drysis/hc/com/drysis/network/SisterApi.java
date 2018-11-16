@@ -18,7 +18,7 @@ import drysis.hc.com.drysis.bean.entity.Sister;
  */
 public class SisterApi {
     private static final String TAG="Network";
-    private static final String BASE_URL="http://gank.io/api/data/福利/";
+    private static final String BASE_URL="https://gank.io/api/data/福利/";
     /*
     查询妹子信息
      */
@@ -30,7 +30,9 @@ public class SisterApi {
             HttpURLConnection conn=(HttpURLConnection)url.openConnection();
             conn.setConnectTimeout(5000);
             conn.setRequestMethod("GET");
+            conn.setInstanceFollowRedirects(false);
             int code =conn.getResponseCode();
+            Log.d(TAG, "conn: "+conn);
             Log.d(TAG, "fetchUrl: "+fetchUrl);
             Log.d(TAG, "Server response: "+code);//响应code;
             if(code==200){
@@ -57,10 +59,10 @@ public class SisterApi {
             JSONObject results=(JSONObject)array.get(i);
             Sister sister=new Sister();
             sister.set_id(results.getString("_id"));
-            sister.setCreateAt(results.getString("createAt"));
+            sister.setCreateAt(results.getString("createdAt"));
             sister.setDesc(results.getString("desc"));
-            sister.setPublishedAt(results.getString("publishedAt"));
             sister.setSource(results.getString("source"));
+            sister.setPublishedAt(results.getString("publishedAt"));
             sister.setType(results.getString("type"));
             sister.setUrl(results.getString("url"));
             sister.setUsed(results.getBoolean("used"));
